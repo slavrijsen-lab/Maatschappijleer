@@ -99,7 +99,7 @@ function go(t){tab=t;nav.innerHTML=T.map(([k,n])=>`<button class="${k==t?'on':''
 function leer(){m.innerHTML=Object.keys(H).map(k=>`<div class="c"><h2>${k} ${H[k]}</h2><ul>${THEORIE[k].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")}
 function fc(){S.d=wshuf(FC,x=>"f:"+x[0]);S.i=0;S.f=false;S.k=[];S.rq={};fcr()}
 function fcr(){const i=S.i;if(i>=S.d.length){m.innerHTML=`<div class="c"><h2>Klaar!</h2><p>Goed: ${S.k.length} van ${FC.length} begrippen. De begrippen die je moeilijk vindt komen de volgende keer vaker terug.</p><button class="btn p" onclick="fc()">Opnieuw</button></div>`;return}
-const[t,d]=S.d[i];m.innerHTML=`<div class="mu">Kaart ${i+1}/${S.d.length}</div><div class="bar"><i style="width:${i/S.d.length*100}%"></i></div><div class="c fc" onclick="S.f=!S.f;fcr()">${S.f?d:'<b>'+t+'</b>'}</div><div class="row"><button class="btn" onclick="S.f=!S.f;fcr()">Draai om</button><button class="btn" onclick="fk(0)">Check</button><button class="btn p" onclick="fk(1)">Goed</button></div>`}
+const[t,d]=S.d[i];m.innerHTML=`<div class="mu">Kaart ${i+1}/${S.d.length}</div><div class="bar"><i style="width:${i/S.d.length*100}%"></i></div><div class="c fc" onclick="S.f=!S.f;fcr()">${S.f?d:'<b>'+t+'</b>'}</div><div class="row"><button class="btn" onclick="S.f=!S.f;fcr()">Draai om</button><button class="btn" onclick="fk(0)">Fout</button><button class="btn p" onclick="fk(1)">Goed</button></div>`}
 function fk(v){const c=S.d[S.i];rec("f:"+c[0],v);if(v)S.k.push(c);else if(!S.rq[c[0]]){S.rq[c[0]]=1;S.d.splice(Math.min(S.i+5,S.d.length),0,c)}S.i++;S.f=false;fcr()}
 function quiz(){S.q=sh(wshuf(MC,x=>"q:"+x[0]).slice(0,10));S.i=0;S.s=0;qr()}
 function qr(){const i=S.i;if(i>=S.q.length){const h=load("ml-best");const b=Math.max(h.b||0,S.s);save("ml-best",{b});m.innerHTML=`<div class="c"><h2>Score: ${S.s}/${S.q.length}</h2><p class="mu">Beste score: ${b}/${S.q.length}</p><button class="btn p" onclick="quiz()">Nieuwe quiz</button></div>`;return}
@@ -109,13 +109,13 @@ function oef(){S.q=OPEN.map((x,i)=>i);S.i=0;S.r={};or()}
 function or(){const i=S.i,tot=OPEN.length;if(i>=tot){const g=Object.values(S.r).filter(v=>v==2).length,b=Object.values(S.r).filter(v=>v==1).length;m.innerHTML=`<div class="c"><h2>Resultaat</h2><p>Goed: ${g} · Bijna: ${b} · Nog oefenen: ${tot-g-b}</p><button class="btn p" onclick="oef()">Opnieuw</button></div>`;return}
 const q=OPEN[i];m.innerHTML=`<div class="mu">Opgave ${i+1}/${tot} · schrijf eerst je eigen antwoord</div><div class="bar"><i style="width:${i/tot*100}%"></i></div><div class="c"><h2>${q[0]}</h2><textarea id="ta" rows="4" placeholder="Typ je antwoord..."></textarea><p><button class="btn p" onclick="this.parentNode.nextElementSibling.hidden=false;this.hidden=true">Toon modelantwoord</button></p><div hidden><div class="ans">${q[1]}</div><p>Hoe ging het?</p><div class="row"><button class="btn" onclick="rate(0)">Nog niet</button><button class="btn" onclick="rate(1)">Bijna</button><button class="btn p" onclick="rate(2)">Goed</button></div></div></div>`}
 function vg(){const a=ST(),st=id=>{const x=a[id];return!x?0:x.l?2:1};
-const lab=["⚪ nog niet geoefend","🟠 Check","🟢 Goed"];
+const lab=["⚪ nog niet geoefend","🟠 Fout","🟢 Goed"];
 const fl=FC.map(c=>[c,st("f:"+c[0])]),g=fl.filter(x=>x[1]==2).length,ch=fl.filter(x=>x[1]==1).length;
 const qs=MC.map(q=>[q,a["q:"+q[0]]]).filter(x=>x[1]);
 const row=(t,x)=>`<li>${t} <span class="mu">${x}</span></li>`;
-m.innerHTML=`<div class="c"><h2>Begrippen (flashcards)</h2><div class="bar"><i style="width:${g/FC.length*100}%"></i></div><p>🟢 Goed: ${g} · 🟠 Check: ${ch} · ⚪ Nog niet geoefend: ${FC.length-g-ch} (van ${FC.length})</p>
-<p class="mu">Status = je laatste antwoord. Begrippen met Check komen vaker terug.</p>
-<ul>${[...fl].sort((p,q)=>p[1]-q[1]||0).map(([c,v])=>row("<b>"+c[0]+"</b>",lab[v]+(a["f:"+c[0]]?` (${a["f:"+c[0]].r}× goed, ${a["f:"+c[0]].w}× check)`:""))).join("")}</ul></div>
+m.innerHTML=`<div class="c"><h2>Begrippen (flashcards)</h2><div class="bar"><i style="width:${g/FC.length*100}%"></i></div><p>🟢 Goed: ${g} · 🟠 Fout: ${ch} · ⚪ Nog niet geoefend: ${FC.length-g-ch} (van ${FC.length})</p>
+<p class="mu">Status = je laatste antwoord. Begrippen met Fout komen vaker terug.</p>
+<ul>${[...fl].sort((p,q)=>p[1]-q[1]||0).map(([c,v])=>row("<b>"+c[0]+"</b>",lab[v]+(a["f:"+c[0]]?` (${a["f:"+c[0]].r}× goed, ${a["f:"+c[0]].w}× fout)`:""))).join("")}</ul></div>
 <div class="c"><h2>Quizvragen</h2><p>${qs.length?"Je hebt "+qs.length+" van "+MC.length+" vragen geoefend.":"Nog geen quizvragen gemaakt."}</p>
 <ul>${qs.sort((p,q)=>(q[1].w-q[1].r)-(p[1].w-p[1].r)).map(([q,x])=>row(q[0],`✅ ${x.r}× · ❌ ${x.w}×`)).join("")}</ul></div>
 <button class="btn" onclick="if(confirm('Alle voortgang wissen?')){save('ml-st',{});vg()}">Voortgang wissen</button>`}
